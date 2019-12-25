@@ -6,8 +6,17 @@
 	<bean id="someMessageSource" name="yourMessageSource"
 			class="org.springframework.context.support.StaticMessageSource"/>
 
+	<bean id="sunzheng" name="sunzheng_name"
+		  class="org.springframework.context.support.Sunzheng">
+		<constructor-arg index="0" value="1"/>
+		<constructor-arg index="1" value="sun"/>
+		<constructor-arg index="2" value="18"/>
+	</bean>
+
 	<bean class="org.springframework.context.support.ClassPathXmlApplicationContext" lazy-init="true">
 		<constructor-arg value="someNonExistentFile.xml"/>
 	</bean>
+
+	<bean id="myBeanFactoryPostProcessor" class="org.springframework.sunzheng.MyBeanFactoryPostProcessor"/>
 
 </beans>
