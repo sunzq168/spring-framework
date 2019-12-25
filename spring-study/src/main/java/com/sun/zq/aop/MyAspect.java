@@ -1,6 +1,5 @@
 package com.sun.zq.aop;
 
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -15,10 +14,10 @@ public class MyAspect {
 		System.out.println("point cut execute");
 	}
 
-	@Pointcut("execution(* com.sun.zq.aop..*.*(..))")
-	public void pointCutAfter(){
-		System.out.println("point cut execute");
-	}
+//	@Pointcut("execution(* com.sun.zq.aop..*.*(..))")
+//	public void pointCutAfter(){
+//		System.out.println("point cut execute");
+//	}
 
 	// advice在pointCut之前执行
 	@Before("com.sun.zq.aop.MyAspect.pointCut()")
@@ -27,8 +26,8 @@ public class MyAspect {
 	}
 
 	// advice在pointCut之前执行
-	@After("pointCutAfter()")
-	public void adviceAfter() {
-		System.out.println("after......");
-	}
+//	@After("pointCutAfter()")
+//	public void adviceAfter() {
+//		System.out.println("after......");
+//	}
 }
