@@ -3,7 +3,7 @@ package org.springframework.sunzheng;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.support.Sunzheng;
+import org.springframework.sunzheng.ioc.Sunzheng;
 
 public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 	@Override

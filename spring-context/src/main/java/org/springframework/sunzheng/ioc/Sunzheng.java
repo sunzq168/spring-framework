@@ -1,4 +1,4 @@
-package org.springframework.context.support;
+package org.springframework.sunzheng.ioc;
 
 
 public class Sunzheng {
