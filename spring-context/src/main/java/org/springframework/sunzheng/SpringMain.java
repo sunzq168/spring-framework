@@ -1,6 +1,8 @@
-import com.sun.zq.CityService;
-import com.sun.zq.MyApp;
+package org.springframework.sunzheng;
+
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.sunzheng.aop.HelloService;
+import org.springframework.sunzheng.aop.HelloServiceImpl;
 
 public class SpringMain {
 	public static void main(String[] args) {

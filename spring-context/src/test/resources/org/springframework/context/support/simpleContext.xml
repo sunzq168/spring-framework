@@ -3,11 +3,28 @@
 
 <beans>
 
-	<bean id="someMessageSource" name="yourMessageSource"
-			class="org.springframework.context.support.StaticMessageSource"/>
+<!--	<bean id="someMessageSource" name="yourMessageSource"-->
+<!--			class="org.springframework.context.support.StaticMessageSource"/>-->
 
-	<bean class="org.springframework.context.support.ClassPathXmlApplicationContext" lazy-init="true">
-		<constructor-arg value="someNonExistentFile.xml"/>
+<!--	<bean id="sunzheng" name="sunzheng_name"-->
+<!--		  class="org.springframework.sunzheng.ioc.Sunzheng">-->
+<!--		<constructor-arg index="0" value="1"/>-->
+<!--		<constructor-arg index="1" value="sun"/>-->
+<!--		<constructor-arg index="2" value="18"/>-->
+<!--	</bean>-->
+
+<!--	<bean class="org.springframework.context.support.ClassPathXmlApplicationContext" lazy-init="true">-->
+<!--		<constructor-arg value="someNonExistentFile.xml"/>-->
+<!--	</bean>-->
+
+<!--	<bean id="myBeanFactoryPostProcessor" class="org.springframework.sunzheng.MyBeanFactoryPostProcessor"/>-->
+
+	<bean id="studentA" class="org.springframework.sunzheng.ioc.StudentA">
+		<constructor-arg ref="studentB"/>
+	</bean>
+
+	<bean id="studentB" class="org.springframework.sunzheng.ioc.StudentB">
+		<constructor-arg ref="studentA"/>
 	</bean>
 
 </beans>
