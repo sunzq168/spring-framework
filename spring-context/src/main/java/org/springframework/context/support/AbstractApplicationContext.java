@@ -631,7 +631,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
-		//设置beanFactory的classLoader为当前context的classoader
+		// 配置类加载器：默认使用当前上下文的类加载器
+		//设置beanFactory的classLoader为当前context的classLoader
 		beanFactory.setBeanClassLoader(getClassLoader());
 		//设置beanFactory的表达式语言处理器
 		//默认使用#{bean.XXX}的形式来调用相关属性值
