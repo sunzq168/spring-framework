@@ -219,6 +219,7 @@ public class InjectionMetadata {
 				throws Throwable {
 
 			if (this.isField) {
+				// 需要注入的字段
 				Field field = (Field) this.member;
 				ReflectionUtils.makeAccessible(field);
 				field.set(target, getResourceToInject(target, requestingBeanName));

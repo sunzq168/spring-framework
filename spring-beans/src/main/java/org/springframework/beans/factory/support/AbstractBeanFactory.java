@@ -198,6 +198,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 		//提取对应的beanName
+		// bean获取过程：先获取bean名字
+		// 会把带有&前缀的去掉，或者去aliasMap中找这个是不是别名，最终确定bean的id是什么
 		final String beanName = transformedBeanName(name);
 		Object bean;
 
@@ -205,9 +207,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		/**
 		 * 检查缓存中或者实例工厂中是否有对应的实例
 		 * 为什么首先会使用这段代码呢？
-		 * 因为在创建单例bean的时候会存在依赖注入的情况，而在创建依赖的时候为了避免循环依赖，
+		 * 1.因为在创建单例bean的时候会存在依赖注入的情况，而在创建依赖的时候为了避免循环依赖，
 		 * Spring创建的原则是不等bean创建完成就会将创建bean的ObjectFactory提早曝光
 		 * 也就是将ObjectFactory加入到缓存中，一旦下个bean创建时候需要依赖上个bean则直接使用ObjectFactory
+		 *  2.spring 默认是单例的，如果能获取到直接返回，提高效率。
 		 */
 		//直接尝试从缓存获取或者SingletonFactories中的ObjectFactory中获取
 		Object sharedInstance = getSingleton(beanName);
@@ -237,12 +240,16 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			// Check if bean definition exists in this factory.
+			//这里对IoC容器中的BeanDefinition是否存在进行检查，检查是否能在当前的BeanFactory中取得需要的Bean。
+			// 如果当前的工厂中取不到，则到双亲BeanFactory中去取。如果当前的双亲工厂取不到，那就顺着双亲BeanFactory
+		    // 链一直向上查找。
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 			//如果beanDefinitionMap 中，也就是在所有已经加载的类中不包括beanName则尝试从parentBeanFactory中检测
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
 				if (parentBeanFactory instanceof AbstractBeanFactory) {
+					// 递归调用父bean的doGetBean查找
 					return ((AbstractBeanFactory) parentBeanFactory).doGetBean(
 							nameToLookup, requiredType, args, typeCheckOnly);
 				}
@@ -264,11 +271,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			try {
+				//这里根据Bean的名字取得BeanDefinition
 				//将存储XML配置文件的GernericBeanDefinition转换为RootBeanDefinition，如果指定BeanName是子Bean的话，同时会合并父类的相关属性
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 
 				// Guarantee initialization of beans that the current bean depends on.
+				//获取当前Bean的所有依赖Bean，这里会触发getBean的递归调用。直到取到一个没有任何依赖的Bean为止。
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {//若存在依赖则需要递归实例化依赖的bean
 					for (String dep : dependsOn) {
@@ -290,7 +299,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// Create bean instance.
 				//实例化依赖的bean后便可以实例化mbd本身了
-				//singleton模式d创建
+				//这里通过createBean方法创建singleton Bean的实例 这里还有一个回调函数
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
@@ -306,7 +315,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					});
 					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
-
+				// 这里是创建prototype bean的地方
 				else if (mbd.isPrototype()) {
 					// It's a prototype -> create a new instance.
 					Object prototypeInstance = null;
